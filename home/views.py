@@ -23,6 +23,8 @@ def index(response):
     url =response.GET.get('search')
     items={}
     items_1={}
+    ti=''
+    pr=''
     amz = 'https://www.amazon.in/s?k='+url.replace(' ','+')
     page = requests.get(amz ,headers={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36"})#for not getting captcha 
     soup = BeautifulSoup(page.content,'html.parser')
