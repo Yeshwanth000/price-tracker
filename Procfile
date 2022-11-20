@@ -1,2 +1,2 @@
 release: python manage.py migrate
-web: guicorn WebAppProject.wsgi --log-file--
+web: gunicorn WebAppProject.wsgi --log-file--
