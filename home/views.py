@@ -23,29 +23,29 @@ def index(response):
     url =response.GET.get('search')
     items={}
     items_1={}
-    ti=''
-    pr=''
     amz = 'https://www.amazon.in/s?k='+url.replace(' ','+')
+    #start = time.time()
     page = requests.get(amz ,headers={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36"})#for not getting captcha 
-    soup = BeautifulSoup(page.content,'html.parser')
+    soup = BeautifulSoup(page.text,'lxml')
     links = soup.find_all('a',class_="a-link-normal s-no-outline")
-    for i in range(len(links)):
-        try:
-            org_link = 'https://amazon.in'+links[i].get('href')
-            page = requests.get(org_link ,headers={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36"})#for not getting captcha 
-            soup = BeautifulSoup(page.content,'html.parser')
-            ti = soup.find('span',id="productTitle").get_text().strip()
-            pr = int(soup.find('span',class_="a-price-whole").get_text().replace(',','').replace('.','').strip())
-            if url.lower() in ti.lower():
-                items[ti] = pr
-            else:
-                items_1[ti] = pr
-        except Exception:
-            continue
-        if len(items) == 1:
-            break
-        if i > len(links)//2:
-            break
+
+    links = list(filter(lambda x: re.search("Sponsored Ad",str(x)) is None ,links))
+
+    org_link = 'https://amazon.in'+links[0].get('href')
+    page = requests.get(org_link ,headers={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36"})#for not getting captcha 
+    soup = BeautifulSoup(page.text,'lxml')
+    ti = soup.find('span',id="productTitle").get_text().strip()
+    try:
+        pr = int(soup.find('span',class_="a-price-whole").get_text().replace(',','').replace('.','').strip())
+    except Exception:
+        pr = soup.find('span',class_="a-offscreen").get_text().strip()[1:]
+    t = ti
+    if "'" in ti:
+        t = ti.replace("'","&#39;") #sometimes Men's = Men&#39;s in amazon img tag
+
+    img = soup.find('img',alt=t).get('src') # for image
+    #end = time.time()
+    #print((end-start)*1000)
 
 
     flip = 'https://www.flipkart.com/search?q='+url.replace('+','%20')
