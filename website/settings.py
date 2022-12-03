@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-e7n^ve*g_k-ea-$5omncnsl-$zzal1uaicej(uu^5=p-_pcoz4
 DEBUG = True
 
 #ALLOWED_HOSTS = ['127.0.0.1','pricetracker-2.herokuapp.com']
-ALLOWED_HOSTS = ['127.0.0.1','localhost']
+ALLOWED_HOSTS = ['127.0.0.1','http://localhost/']
 
 # Application definition
 
